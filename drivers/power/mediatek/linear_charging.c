@@ -1,3 +1,16 @@
+/*
+ * Copyright (C) 2015 MediaTek Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
+
 /*****************************************************************************
  *
  * Filename:
@@ -86,7 +99,7 @@
 #define CV_CHECK_DELAT_FOR_BANDGAP	80	/* 80mV */
 #if defined(CONFIG_MTK_PUMP_EXPRESS_SUPPORT)
 #define BJT_LIMIT			1200000	/* 1.2W */
-#ifndef TA_START_VCHR_TUNUNG_VOLTAG
+#ifndef TA_START_VCHR_TUNUNG_VOLTAGE
 #define TA_START_VCHR_TUNUNG_VOLTAGE	3700	/* for isink blink issue */
 #define TA_CHARGING_CURRENT		CHARGE_CURRENT_1500_00_MA
 #endif				/* TA_START_VCHR_TUNUNG_VOLTAG */
@@ -738,10 +751,9 @@ PMU_STATUS do_jeita_state_machine(void)
 	cv_voltage = select_jeita_cv();
 	battery_charging_control(CHARGING_CMD_SET_CV_VOLTAGE, &cv_voltage);
 
-	#if defined(CONFIG_MTK_HAFG_20)
+#if defined(CONFIG_MTK_HAFG_20)
 	g_cv_voltage = cv_voltage;
-	#endif
-
+#endif
 
 	return PMU_STATUS_OK;
 }
@@ -836,6 +848,9 @@ unsigned int set_bat_charging_current_limit(int current_limit)
 		"[BATTERY] set_bat_charging_current_limit over usb spec(%d,%d)\r\n",
 				current_limit * 100, g_temp_CC_value);
 			}
+
+
+
 	} else {
 		/* change to default current setting */
 		g_bcct_flag = 0;
@@ -919,10 +934,11 @@ void select_charging_curret(void)
 			}
 #else
 			{
-
-				g_temp_CC_value = batt_cust_data.usb_charger_current;
-
-				g_temp_CC_value = batt_cust_data.usb_charger_current;
+#ifdef CONFIG_THUNDERCHARGE_CONTROL
+				g_temp_CC_value_linear = custom_usb_current;
+#else
+                   		g_temp_CC_value = batt_cust_data.usb_charger_current;
+#endif
 #if defined(CONFIG_ARM64)
 				if (strncmp(CONFIG_BUILD_ARM64_APPENDED_DTB_IMAGE_NAMES,
 				    "k35v1_64_om_lwctg", 17) == 0)
@@ -943,32 +959,23 @@ void select_charging_curret(void)
 				if (strncmp(CONFIG_BUILD_ARM_APPENDED_DTB_IMAGE_NAMES,
 				    "k35v1_gmo_cnop_lwctg_512_35m", 28) == 0)
 					g_temp_CC_value = batt_cust_data.ac_charger_current;
-#ifdef CONFIG_THUNDERCHARGE_CONTROL
-				g_temp_CC_value_linear = custom_usb_current;
-#else
-				g_temp_CC_value_linear = cur_usb_charger;
-#endif
-
 			}
 #endif
 		} else if (BMT_status.charger_type == NONSTANDARD_CHARGER) {
-			g_temp_CC_value = batt_cust_data.non_std_ac_charger_current;
+#ifdef CONFIG_THUNDERCHARGE_CONTROL
+                                g_temp_CC_value_linear = custom_ac_current;
+#else
+                  		g_temp_CC_value = batt_cust_data.non_std_ac_charger_current;
+#endif
 		} else if (BMT_status.charger_type == STANDARD_CHARGER) {
-			g_temp_CC_value = batt_cust_data.ac_charger_current;
+#ifdef CONFIG_THUNDERCHARGE_CONTROL
+                                g_temp_CC_value_linear = custom_ac_current;
+#else
+                   		g_temp_CC_value = batt_cust_data.ac_charger_current;
+#endif
 #if defined(CONFIG_MTK_PUMP_EXPRESS_SUPPORT)
 			if (is_ta_connect == KAL_TRUE && ta_vchr_tuning == KAL_TRUE)
 				g_temp_CC_value = CHARGE_CURRENT_1500_00_MA;
-#ifdef CONFIG_THUNDERCHARGE_CONTROL
-			g_temp_CC_value_linear = custom_ac_current;
-#else
-			g_temp_CC_value_linear = cur_no_std_charger;
-#endif
-		} else if (BMT_status.charger_type == STANDARD_CHARGER) {
-#ifdef CONFIG_THUNDERCHARGE_CONTROL
-			g_temp_CC_value_linear = custom_ac_current;
-#else
-			g_temp_CC_value_linear = cur_ac_charger;
-#endif
 		} else if (BMT_status.charger_type == CHARGING_HOST) {
 			g_temp_CC_value = batt_cust_data.charging_host_charger_current;
 		} else if (BMT_status.charger_type == APPLE_2_1A_CHARGER) {
@@ -1121,7 +1128,7 @@ static void pchr_turn_on_charging(void)
 		battery_pump_express_algorithm_start();
 #endif
 
-		/* Set Charging Current*/
+		/* Set Charging Current */
 		if (get_usb_current_unlimited()) {
 			g_temp_CC_value = batt_cust_data.ac_charger_current;
 			battery_log(BAT_LOG_FULL,
@@ -1137,7 +1144,7 @@ static void pchr_turn_on_charging(void)
 			}
 		}
 
-		/* Set Charging Current 
+		/* Set Charging Current
 		if (g_bcct_flag == 1) {
 			battery_log(BAT_LOG_FULL,
 					"[BATTERY] select_charging_curret_bcct !\n");
@@ -1430,4 +1437,5 @@ void mt_battery_charging_algorithm(void)
 		break;
 	}
 
+	battery_charging_control(CHARGING_CMD_DUMP_REGISTER, NULL);
 }
