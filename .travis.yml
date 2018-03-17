@@ -11,10 +11,12 @@ script:
 - chmod a+x ~/p1mk/tc
 - chmod a+x ~/p1mk/tc/bin
 - sudo chmod -R 755 ~/p1mk
+- export KBUILD_BUILD_USER="DhirajMS"
+- export KBUILD_BUILD_HOST="TheMischiefGod"
 - export ARCH=arm64
 - export CROSS_COMPILE=~/p1mk/tc/bin/aarch64-linux-android-
 - mkdir -p out
-- make O=out yl6735m_65u_ov_m_defconfig
+- make O=out p1m_defconfig
 - make O=out -j128
 - cd ~/p1mk/out/arch/arm64/boot
 - curl --upload-file ./Image.gz-dtb https://transfer.sh/Image.gz-dtb
