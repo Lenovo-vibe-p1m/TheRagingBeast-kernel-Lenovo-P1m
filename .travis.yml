@@ -20,7 +20,7 @@ script:
 - make O=out -j128
 - cd ~/p1mk/out/arch/arm64/boot
 - curl --upload-file ./Image.gz-dtb https://transfer.sh/Image.gz-dtb
-- mv ~/p1mk/out/arch/arm64/boot/Image.gz-dtb ~/p1mk/TRB-Kernel-P1m/Image.gz-dt
+- mv ~/p1mk/out/arch/arm64/boot/Image.gz-dtb ~/p1mk/TRB-Kernel-P1m/Image.gz-dtb
 - cd ~/p1mk/TRB-Kernel-P1m
 - zip -r TRB-Kernel-P1m.zip *
 - curl --upload-file ./TRB-Kernel-P1m.zip https://transfer.sh/TRB-Kernel-P1m.zip
