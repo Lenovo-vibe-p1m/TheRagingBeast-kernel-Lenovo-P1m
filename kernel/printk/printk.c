@@ -2537,9 +2537,9 @@ skip:
 		start_critical_timings();
 		local_irq_restore(flags);
 
-        if (do_cond_resched)
-	       cond_resched();
-   }
+		if (do_cond_resched)
+			cond_resched();
+	}
 	console_locked = 0;
 
 	/* Release the exclusive_console once it is used */

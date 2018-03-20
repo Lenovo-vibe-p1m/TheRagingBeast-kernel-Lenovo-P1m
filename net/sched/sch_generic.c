@@ -170,8 +170,9 @@ int sch_direct_xmit(struct sk_buff *skb, struct Qdisc *q,
 	} else {
 		spin_lock(root_lock);
 		return qdisc_qlen(q);
-        }
-        #ifdef CONFIG_MTK_NET_LOGGING
+	}
+
+	#ifdef CONFIG_MTK_NET_LOGGING
 	if (ret != NETDEV_TX_OK) {
 		if (qdisc_qlen(q) < 16) {
 			if (4 == (qdisc_qlen(q)) % 16)

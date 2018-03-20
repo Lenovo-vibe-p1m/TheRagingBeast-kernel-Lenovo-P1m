@@ -744,7 +744,7 @@ isert_connect_release(struct isert_conn *isert_conn)
 {
 	struct isert_device *device = isert_conn->conn_device;
 	int cq_index;
-        struct ib_device *ib_dev = device->ib_device;
+	struct ib_device *ib_dev = device->ib_device;
 
 	pr_debug("Entering isert_connect_release(): >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
 
@@ -753,7 +753,7 @@ isert_connect_release(struct isert_conn *isert_conn)
 
 	isert_free_rx_descriptors(isert_conn);
 	if (isert_conn->conn_cm_id)
-                   rdma_destroy_id(isert_conn->conn_cm_id);
+		rdma_destroy_id(isert_conn->conn_cm_id);
 
 	if (isert_conn->conn_qp) {
 		cq_index = ((struct isert_cq_desc *)
@@ -925,13 +925,15 @@ out:
 	return 0;
 }
 
-static init
+static int
 isert_connect_error(struct rdma_cm_id *cma_id)
 {
 	struct isert_conn *isert_conn = cma_id->qp->qp_context;
-       isert_conn->conn_cm_id = NULL;
+
+	isert_conn->conn_cm_id = NULL;
 	isert_put_conn(isert_conn);
-       return -1;
+
+	return -1;
 }
 
 static int

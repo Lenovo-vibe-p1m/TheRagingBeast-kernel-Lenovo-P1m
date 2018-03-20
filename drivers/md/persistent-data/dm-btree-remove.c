@@ -315,7 +315,7 @@ static void redistribute3(struct dm_btree_info *info, struct btree_node *parent,
 		if (s < 0 && nr_center < -s) {
 			/* not enough in central node */
 			shift(left, center, -nr_center);
-                        s += nr_center;
+			s += nr_center;
 			shift(left, right, s);
 			nr_right += s;
 		} else

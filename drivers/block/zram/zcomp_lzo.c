@@ -39,8 +39,7 @@ static void *lzo_create(void)
 
 static void lzo_destroy(void *private)
 {
-	kfree(private);
-    kvfree(private);
+	kvfree(private);
 }
 
 #ifdef CONFIG_ZSM

@@ -29,7 +29,7 @@ export KBUILD_BUILD_HOST="Dracarys"
 #export CROSS_COMPILE=/home/ubuntu/los15/kernel/lenovo/P1m/toolchain/bin/aarch64-linux-android-
 
 #Defconfig for p1m
-make -C $PWD O=$PWD/out ARCH=arm64 p1m_defconfig
+make -C $PWD O=$PWD/out ARCH=arm64 yl6735m_65u_ov_m_defconfig
 
 #make kernel in out dir
 make -j64 -C $PWD O=$PWD/out ARCH=arm64

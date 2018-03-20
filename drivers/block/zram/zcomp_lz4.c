@@ -39,8 +39,7 @@ static void *zcomp_lz4_create(void)
 
 static void zcomp_lz4_destroy(void *private)
 {
-	kfree(private);
-    kvfree(private);
+	kvfree(private);
 }
 #ifdef CONFIG_ZSM
 static int zcomp_lz4_compress_zram(const unsigned char *src, unsigned char *dst,
