@@ -16,7 +16,9 @@ script:
 - export CROSS_COMPILE=~/p1mk/tc/bin/aarch64-linux-android-
 - mkdir -p out
 - make O=out yl6735m_65u_ov_m_defconfig
-- make O=out -j128
+- make O=out -j$(nproc --all)
 - cd ~/p1mk/out/arch/arm64/boot
 - curl --upload-file ./Image.gz-dtb https://transfer.sh/Image.gz-dtb
+- cd ~/p1mk
+- mv out/arch/arm64/boot/Image.gz-dtb TRB-Kernel-Panelli/
 - echo All Done
